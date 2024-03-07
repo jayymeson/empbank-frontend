@@ -1,5 +1,5 @@
 import React from "react";
-import { AddButton } from "./Button-Styled";
+import { AddButton } from "./Button-Styled"; // Supondo que você tenha este arquivo de estilos
 import { ReactComponent as PlusIcon } from "../../../assets/AddCustomers.svg";
 
 type AddButtonComponentProps = {
@@ -8,7 +8,7 @@ type AddButtonComponentProps = {
 
 const AddButtonComponent: React.FC<AddButtonComponentProps> = ({ onClick }) => (
   <AddButton onClick={onClick}>
-    <PlusIcon  />
+    <PlusIcon />
     Adicionar cliente
   </AddButton>
 );

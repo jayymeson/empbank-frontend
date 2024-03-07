@@ -4,8 +4,8 @@ import {
   LowerGroup,
   NavigationGroup,
   SidebarContainer,
-} from "./sidebar-styled";
-import Logo from "../../atoms/logo/logo";
+} from "./styled";
+import Logo from "../../atoms/Logo/Logo";
 import ChartPieIcon from "../../../assets/ChartPie.svg";
 import ClipboardTextIcon from "../../../assets/ClipboardText.svg";
 import MoneyIcon from "../../../assets/Money.svg";

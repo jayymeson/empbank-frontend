@@ -1,5 +1,5 @@
 import React from "react";
-import AddButtonComponent from "../button/AddButtonComponent";
+import AddButtonComponent from "./AddButtonComponent";
 
 const SomeComponent = () => (
   <div>
