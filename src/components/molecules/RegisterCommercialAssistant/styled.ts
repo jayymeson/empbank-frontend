@@ -2,12 +2,18 @@ import styled from "styled-components";
 
 export const ContainerModal = styled.form`
   width: 800px;
+  height: 479px; 
   display: flex;
   flex-direction: column;
   padding: 24px;
   border-radius: 8px;
   background-color: #ffffff;
-  gap: 16px;
+  gap: 40px; 
+  position: fixed;
+  top: 273px; 
+  left: 320px; 
+  align-self: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
   h2 {
     font-family: Roboto;
@@ -54,6 +60,36 @@ export const ContainerAllInputs = styled.div`
     &:focus {
       outline: none;
     }
+  }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+export const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+export const Input = styled.input`
+  width: 704px;
+  height: 43px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #1219291f;
+  &:focus {
+    outline: none;
   }
 `;
 

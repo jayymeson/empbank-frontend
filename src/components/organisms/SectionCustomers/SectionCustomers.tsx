@@ -1,3 +1,4 @@
+// Importações necessárias
 import React, { useEffect, useState } from "react";
 import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
@@ -10,7 +11,10 @@ import {
 } from "./styled";
 import AddButtonComponent from "../../atoms/Button/AddButtonComponent";
 import UnlinkButtonComponent from "../../atoms/Button/UnlinkButtonComponent";
+import { API_BASE_URL } from "../../../apiconfig";
+import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
 
+// Definições de interface
 interface CommercialAssistant {
   id: string;
   name: string;
@@ -29,13 +33,20 @@ interface Customer {
 const SectionCustomer: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
+  const { selectedAssistantId } = useCommercialAssistant();
 
   useEffect(() => {
     const fetchCustomers = async () => {
+      let url = `${API_BASE_URL}/customer/find`;
+      if (selectedAssistantId) {
+        url = `${API_BASE_URL}/commercial-assistant/${selectedAssistantId}/customers`;
+      }
+
       try {
-        const response = await fetch("http://localhost:3010/customer/unlink-customers");
+        const response = await fetch(url);
         const data = await response.json();
-        setCustomers(data.data);
+        setCustomers(data.customers || []);
+        setCustomerCount(data.count || 0);
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }
@@ -43,7 +54,7 @@ const SectionCustomer: React.FC = () => {
 
     const fetchCustomerCount = async () => {
       try {
-        const response = await fetch("http://localhost:3020/customer/find");
+        const response = await fetch(`${API_BASE_URL}/customer/find`);
         const data = await response.json();
         setCustomerCount(data.count);
       } catch (error) {
@@ -53,7 +64,7 @@ const SectionCustomer: React.FC = () => {
 
     fetchCustomers();
     fetchCustomerCount();
-  }, []);
+  }, [selectedAssistantId]);
 
   // Funções de manipulação de cliques nos botões
   const handleAddCustomer = () => {
@@ -70,11 +81,18 @@ const SectionCustomer: React.FC = () => {
     <ContainerSectionCustomer>
       <ContainerButtons>
         <div>
-          <span>{customers.some(customer => customer.CommercialAssistant) ? `Carteira de ${customers.find(customer => customer.CommercialAssistant)?.CommercialAssistant?.name}` : 'Clientes (Não vinculado)'}</span>
+          <span>
+            {customers.some((customer) => customer.CommercialAssistant)
+              ? `Carteira de ${
+                  customers.find((customer) => customer.CommercialAssistant)
+                    ?.CommercialAssistant?.name
+                }`
+              : "Clientes (Não vinculado)"}
+          </span>
           <Count>{customerCount}</Count>
         </div>
         <div className="buttons">
-          {customers.some(customer => !customer.CommercialAssistant) ? (
+          {customers.some((customer) => !customer.CommercialAssistant) ? (
             <AddButtonComponent onClick={handleAddCustomer} />
           ) : (
             <UnlinkButtonComponent onClick={handleUnlinkCustomer} />

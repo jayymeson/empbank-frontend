@@ -1,6 +1,9 @@
+// DropDown.tsx
 import React, { useEffect, useState } from "react";
+import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext"; // ajuste o caminho conforme necessário
 import RoundButtonComponent from "../../atoms/Button/RoundButtonComponent";
 import RegisterCustomer from "../RegisterCustomers/RegisterCustomers";
+import { API_BASE_URL } from "../../../apiconfig";
 
 interface CommercialAssistant {
   id: string;
@@ -9,61 +12,44 @@ interface CommercialAssistant {
   phone: string;
 }
 
-interface Customer {
-  id: string;
-  code: string;
-  name: string;
-  network: string;
-  CommercialAssistant?: CommercialAssistant | null;
-}
-
 const DropDown: React.FC = () => {
   const [assistants, setAssistants] = useState<CommercialAssistant[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setSelectedAssistantId } = useCommercialAssistant();
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchAssistants = async () => {
       try {
-        const response = await fetch("http://localhost:3020/customer/find");
+        const response = await fetch(`${API_BASE_URL}/commercial-assistant`);
         const data = await response.json();
-        const fetchedCustomers: Customer[] = data.data;
-        const commercialAssistants: CommercialAssistant[] = fetchedCustomers
-          .map((customer) => customer.CommercialAssistant)
-          .filter(
-            (assistant): assistant is CommercialAssistant => assistant !== null
-          );
-
-        setAssistants(
-          Array.from(
-            new Set(
-              commercialAssistants.map((assistant) => JSON.stringify(assistant))
-            )
-          ).map((str) => JSON.parse(str) as CommercialAssistant)
-        );
+        setAssistants(data || []);
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error("Erro ao buscar assistentes comerciais:", error);
       }
     };
 
-    fetchCustomers();
+    fetchAssistants();
   }, []);
 
   const handleClickOpenModal = () => {
     setIsModalOpen(true);
   };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAssistantId(e.target.value);
+  };
+
   return (
     <>
       <div>
-        <div>
-          <label>Selecione o Assistente Comercial</label>
-          <select name="assistants" id="assistants">
-            {assistants.map((assistant, index) => (
-              <option key={index} value={assistant.id}>
-                {assistant.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <label htmlFor="assistants">Selecione o Assistente Comercial</label>
+        <select name="assistants" id="assistants" onChange={handleSelectChange}>
+          {assistants.map((assistant) => (
+            <option key={assistant.id} value={assistant.id}>
+              {assistant.name}
+            </option>
+          ))}
+        </select>
         <RoundButtonComponent onClick={handleClickOpenModal} />
       </div>
       {isModalOpen && (
