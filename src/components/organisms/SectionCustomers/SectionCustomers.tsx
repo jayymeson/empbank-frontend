@@ -18,8 +18,10 @@ import RegisterCustomer from "../../molecules/RegisterCustomers/RegisterCustomer
 const SectionCustomer: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
-  const { selectedAssistantId } = useCommercialAssistant();
+  const { selectedAssistantId, shouldRefresh, triggerRefresh } =
+    useCommercialAssistant();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
 
   const fetchCustomers = useCallback(async () => {
     let url = `${API_BASE_URL}/customer/find`;
@@ -35,17 +37,69 @@ const SectionCustomer: React.FC = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, [fetchCustomers]);
+  }, [fetchCustomers, shouldRefresh]);
 
   const handleAddCustomer = () => {
     setIsModalOpen(true);
   };
 
-  const handlelinkCustomer = () => {
-    console.log("Lógica para desvincular um cliente.");
+  const handlelinkCustomer = async () => {
+    // Aqui entra a lógica para vincular os clientes selecionados
+    triggerRefresh();
   };
 
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    triggerRefresh();
+  };
+
+  const handleSelectCustomer = (customerId: string, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedCustomers((prev) => [...prev, customerId]);
+    } else {
+      setSelectedCustomers((prev) => prev.filter((id) => id !== customerId));
+    }
+  };
+
+  const handleSelectAllCustomers = (isSelected: boolean) => {
+    if (isSelected) {
+      const allCustomerIds = customers.map((customer) => customer.id);
+      setSelectedCustomers(allCustomerIds);
+    } else {
+      setSelectedCustomers([]);
+    }
+  };
+
+  const handleLinkCustomers = async () => {
+    if (!selectedAssistantId) {
+      alert("Por favor, selecione um assistente comercial.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/customer/link-customers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerIds: selectedCustomers,
+          commercialAssistantId: selectedAssistantId,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Clientes vinculados com sucesso ao assistente comercial!");
+        setSelectedCustomers([]);
+        fetchCustomers(); // Atualize a lista de clientes aqui se necessário
+      } else {
+        alert("Erro ao vincular clientes. Por favor, tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao vincular clientes:", error);
+      alert(
+        "Erro ao vincular clientes. Verifique o console para mais detalhes."
+      );
+    }
+  };
 
   return (
     <ContainerSectionCustomer>
@@ -56,7 +110,7 @@ const SectionCustomer: React.FC = () => {
         </div>
         <div className="buttons">
           <AddButtonComponent onClick={handleAddCustomer} />
-          <LinkButtonComponent onClick={handlelinkCustomer} />
+          <LinkButtonComponent onClick={handleLinkCustomers} />
         </div>
       </ContainerButtons>
       <ContainerSearch>
@@ -65,19 +119,31 @@ const SectionCustomer: React.FC = () => {
       </ContainerSearch>
       <ContainerLegend>
         <div className="labelData">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={
+              selectedCustomers.length === customers.length &&
+              customers.length > 0
+            }
+            onChange={(e) => handleSelectAllCustomers(e.target.checked)}
+          />
           <span>Código</span>
           <span>Parceiro</span>
         </div>
         <span>Rede</span>
       </ContainerLegend>
       {customers.map((customer) => (
-        <CardCustomer key={customer.id} customer={customer} />
+        <CardCustomer
+          key={customer.id}
+          customer={customer}
+          isSelected={selectedCustomers.includes(customer.id)}
+          onSelectCustomer={handleSelectCustomer}
+        />
       ))}
       {isModalOpen && (
         <RegisterCustomer
-          handleClose={() => setIsModalOpen(false)}
-          onCustomerCreated={fetchCustomers}
+          handleClose={handleCloseModal}
+          onCustomerCreated={fetchCustomers} // Pode ajustar conforme a necessidade de atualização após criação
         />
       )}
     </ContainerSectionCustomer>

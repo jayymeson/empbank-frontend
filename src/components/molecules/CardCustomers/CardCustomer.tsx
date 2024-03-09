@@ -4,21 +4,25 @@ import { ContainerCard } from "./style";
 
 interface CardCustomerProps {
   customer: Customer;
+  isSelected?: boolean;
+  onSelectCustomer?: (customerId: string, isSelected: boolean) => void;
 }
 
-const CardCustomer: React.FC<CardCustomerProps> = ({ customer }) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+const CardCustomer: React.FC<CardCustomerProps> = ({
+  customer,
+  isSelected = false,
+  onSelectCustomer,
+}) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onSelectCustomer?.(customer.id, event.target.checked);
   };
-  
+
   return (
-    <ContainerCard $isChecked={isChecked}>
+    <ContainerCard $isChecked={isSelected}>
       <div className="ContainerData">
         <input
           type="checkbox"
-          checked={isChecked}
+          checked={isSelected}
           onChange={handleCheckboxChange}
         />
         <span>{customer.code}</span>

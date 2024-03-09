@@ -34,14 +34,16 @@ interface SectionAssistantProps {
 }
 
 const SectionAssistant: React.FC<SectionAssistantProps> = () => {
-  const { selectedAssistantId, selectedAssistantName } =
-    useCommercialAssistant();
+  const {
+    selectedAssistantId,
+    selectedAssistantName,
+    triggerRefresh,
+    shouldRefresh,
+  } = useCommercialAssistant();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
 
   useEffect(() => {
-    if (!selectedAssistantId) return;
-
     const fetchAssistantCustomers = async () => {
       try {
         const response = await fetch(
@@ -67,10 +69,12 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       }
     };
 
-    if (selectedAssistantId) {
-      fetchAssistantCustomers();
+    fetchAssistantCustomers();
+
+    if (shouldRefresh) {
+      triggerRefresh();
     }
-  }, [selectedAssistantId]);
+  }, [selectedAssistantId, shouldRefresh, triggerRefresh]);
 
   const handleUnlinkCustomer = () => {
     console.log("Lógica para desvincular um cliente.");
