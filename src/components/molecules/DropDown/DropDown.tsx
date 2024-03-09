@@ -1,9 +1,9 @@
 // DropDown.tsx
 import React, { useEffect, useState } from "react";
-import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext"; // ajuste o caminho conforme necessário
+import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
 import RoundButtonComponent from "../../atoms/Button/RoundButtonComponent";
-import RegisterCustomer from "../RegisterCustomers/RegisterCustomers";
 import { API_BASE_URL } from "../../../apiconfig";
+import RegisterCommercialAssistant from "../RegisterCommercialAssistant/RegisterComercialAssistant";
 
 interface CommercialAssistant {
   id: string;
@@ -18,17 +18,17 @@ const DropDown: React.FC = () => {
   const { setSelectedAssistantId, setSelectedAssistantName } =
     useCommercialAssistant();
 
-  useEffect(() => {
-    const fetchAssistants = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/commercial-assistant`);
-        const data = await response.json();
-        setAssistants(data || []);
-      } catch (error) {
-        console.error("Erro ao buscar assistentes comerciais:", error);
-      }
-    };
+  const fetchAssistants = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/commercial-assistant`);
+      const data = await response.json();
+      setAssistants(data || []);
+    } catch (error) {
+      console.error("Erro ao buscar assistentes comerciais:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchAssistants();
   }, []);
 
@@ -41,8 +41,32 @@ const DropDown: React.FC = () => {
     const selectedAssistant = assistants.find(
       (assistant) => assistant.id === id
     );
-    setSelectedAssistantId(id);
-    setSelectedAssistantName(selectedAssistant ? selectedAssistant.name : null);
+    setSelectedAssistantId(id === "default" ? null : id);
+    setSelectedAssistantName(selectedAssistant ? selectedAssistant.name : "");
+  };
+
+  // A função para criar um novo assistente comercial
+  const handleCreateAssistant = async (
+    assistantData: Omit<CommercialAssistant, "id">
+  ) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/commercial-assistant`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(assistantData),
+      });
+      if (response.ok) {
+        alert("Assistente comercial cadastrado com sucesso!");
+        fetchAssistants(); // Recarrega a lista de assistentes
+        setIsModalOpen(false); // Fecha o modal
+      } else {
+        const errorData = await response.json();
+        alert(`Erro ao cadastrar assistente comercial: ${errorData.message}`);
+      }
+    } catch (error) {
+      alert("Erro ao cadastrar assistente comercial.");
+      console.error(error);
+    }
   };
 
   return (
@@ -50,6 +74,7 @@ const DropDown: React.FC = () => {
       <div>
         <label htmlFor="assistants">Selecione o Assistente Comercial</label>
         <select name="assistants" id="assistants" onChange={handleSelectChange}>
+          <option value="default">Selecione um Assistente</option>
           {assistants.map((assistant) => (
             <option key={assistant.id} value={assistant.id}>
               {assistant.name}
@@ -59,7 +84,10 @@ const DropDown: React.FC = () => {
         <RoundButtonComponent onClick={handleClickOpenModal} />
       </div>
       {isModalOpen && (
-        <RegisterCustomer handleClose={() => setIsModalOpen(false)} />
+        <RegisterCommercialAssistant
+          handleClose={() => setIsModalOpen(false)}
+          handleCreate={handleCreateAssistant}
+        />
       )}
     </>
   );

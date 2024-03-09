@@ -42,7 +42,6 @@ const SectionCustomer: React.FC = () => {
       try {
         const response = await fetch(url);
         const data = await response.json();
-        console.log("Dados recebidos:", data);
         setCustomers(data.data || []);
         setCustomerCount(data.count || 0);
       } catch (error) {

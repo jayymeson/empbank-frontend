@@ -14,7 +14,7 @@ const CardCustomer: React.FC<CardCustomerProps> = ({ customer }) => {
   };
   
   return (
-    <ContainerCard isChecked={isChecked}>
+    <ContainerCard $isChecked={isChecked}>
       <div className="ContainerData">
         <input
           type="checkbox"

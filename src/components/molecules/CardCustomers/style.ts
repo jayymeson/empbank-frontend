@@ -1,16 +1,13 @@
 import styled from "styled-components";
 
-interface ContainerCardProps {
-    isChecked: boolean;
-  }
 
-export const ContainerCard = styled.div<ContainerCardProps>`
+export const ContainerCard = styled.div<{ $isChecked: boolean }>`
   width: 590px;
   height: 45px;
   border-radius: 18px;
   padding: 12px 16px;
   gap: 12px;
-  border: 1px solid ${props => (props.isChecked ? "#00BDFF" : "none")};
+  border: 1px solid ${props => (props.$isChecked ? "#00BDFF" : "none")};
   background: #eaedee;
   font-family: Roboto;
   font-size: 14px;

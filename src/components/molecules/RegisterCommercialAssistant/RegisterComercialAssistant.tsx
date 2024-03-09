@@ -12,7 +12,7 @@ import {
   InputWrapper,
   Input,
 } from "./styled";
-import { API_BASE_URL } from "../../../apiconfig";
+import { CommercialAssistant } from "../../../types/customers";
 
 const assistantSchema = z.object({
   name: z.string().min(1, "Nome completo é obrigatório"),
@@ -24,50 +24,29 @@ type AssistantFormData = z.infer<typeof assistantSchema>;
 
 interface RegisterCommercialAssistantProps {
   handleClose: () => void;
+  handleCreate: (
+    assistantData: Omit<CommercialAssistant, "id">
+  ) => Promise<void>;
 }
 
 const RegisterCommercialAssistant: React.FC<
   RegisterCommercialAssistantProps
-> = ({ handleClose }) => {
+> = ({ handleClose, handleCreate }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AssistantFormData>({
-    resolver: zodResolver(assistantSchema),
-  });
+  } = useForm<AssistantFormData>({ resolver: zodResolver(assistantSchema) });
 
   const onSubmit: SubmitHandler<AssistantFormData> = async (data) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/commercial-assistant`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Erro na resposta:", errorData);
-        throw new Error(
-          `Erro na solicitação: ${response.status} ${errorData.message}`
-        );
-      }
-
-      const responseData = await response.json();
-      console.log(responseData);
-      alert("Assistente Comercial cadastrado com sucesso!");
-      handleClose();
-    } catch (error) {
-      console.error("Erro ao salvar o assistente comercial:", error);
-      alert("Erro ao salvar o assistente comercial.");
-    }
+    console.log("Enviando dados:", data); // Log de debug
+    handleCreate(data);
+    handleClose();
   };
 
   return (
     <Overlay>
-      <ContainerModal onSubmit={handleSubmit(onSubmit)}>
+      <ContainerModal onSubmit={handleSubmit(onSubmit)} as="form">
         <h2>Cadastro de Cliente</h2>
         <ContainerAllInputs>
           <InputWrapper>
@@ -98,15 +77,14 @@ const RegisterCommercialAssistant: React.FC<
               placeholder="Digite o telefone do assistente comercial."
             />
             <p>{errors.phone?.message}</p>
+            <ContainerButtons>
+              <ButtonCancel type="button" onClick={handleClose}>
+                Cancelar
+              </ButtonCancel>
+              <ButtonRegister type="submit">Salvar</ButtonRegister>
+            </ContainerButtons>
           </InputWrapper>
         </ContainerAllInputs>
-
-        <ContainerButtons>
-          <ButtonCancel type="button" onClick={handleClose}>
-            Cancelar
-          </ButtonCancel>
-          <ButtonRegister type="submit">Salvar</ButtonRegister>
-        </ContainerButtons>
       </ContainerModal>
     </Overlay>
   );

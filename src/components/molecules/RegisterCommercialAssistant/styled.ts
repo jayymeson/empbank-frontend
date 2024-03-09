@@ -2,17 +2,14 @@ import styled from "styled-components";
 
 export const ContainerModal = styled.form`
   width: 800px;
-  height: 479px; 
+  min-height: 479px;
   display: flex;
   flex-direction: column;
   padding: 24px;
   border-radius: 8px;
   background-color: #ffffff;
-  gap: 40px; 
+  gap: 40px;
   position: fixed;
-  top: 273px; 
-  left: 320px; 
-  align-self: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
   h2 {
@@ -27,7 +24,6 @@ export const ContainerModal = styled.form`
 `;
 
 export const ContainerAllInputs = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -64,7 +60,7 @@ export const ContainerAllInputs = styled.div`
 `;
 
 export const Overlay = styled.div`
-  position: fixed;
+   position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -134,6 +130,9 @@ export const ButtonRegister = styled.button`
   letter-spacing: 0em;
   text-align: center;
   color: #ffffff;
+  display: block !important;
+  position: relative !important;
+  z-index: 100 !important;
 
   &:hover {
     cursor: pointer;
