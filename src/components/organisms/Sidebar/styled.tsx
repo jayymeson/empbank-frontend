@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SidebarContainer = styled.div`
-  min-height: 97.4vh; // Isso garante que o sidebar tenha no mínimo a altura da tela
+  min-height: 97.4vh;
   width: 85px;
   height: auto;
   background-color: #fff;

@@ -1,5 +1,4 @@
-// Importações necessárias
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -13,55 +12,40 @@ import AddButtonComponent from "../../atoms/Button/AddButtonComponent";
 import LinkButtonComponent from "../../atoms/Button/LinkButtonComponent";
 import { API_BASE_URL } from "../../../apiconfig";
 import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
-
-// Definições de interface
-interface CommercialAssistant {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-}
-
-interface Customer {
-  id: string;
-  code: string;
-  name: string;
-  network: string;
-  CommercialAssistant?: CommercialAssistant | null;
-}
+import { Customer } from "../../../types/customers";
+import RegisterCustomer from "../../molecules/RegisterCustomers/RegisterCustomers";
 
 const SectionCustomer: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
   const { selectedAssistantId } = useCommercialAssistant();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      let url = `${API_BASE_URL}/customer/find`;
-
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setCustomers(data.data || []);
-        setCustomerCount(data.count || 0);
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
-      }
-    };
-
-    fetchCustomers();
+  const fetchCustomers = useCallback(async () => {
+    let url = `${API_BASE_URL}/customer/find`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setCustomers(data.data || []);
+      setCustomerCount(data.count || 0);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    }
   }, [selectedAssistantId]);
 
-  // Funções de manipulação de cliques nos botões
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
+
   const handleAddCustomer = () => {
-    console.log("Lógica para adicionar um cliente.");
-    // Implemente a lógica de adicionar um cliente aqui
+    setIsModalOpen(true);
   };
 
   const handlelinkCustomer = () => {
     console.log("Lógica para desvincular um cliente.");
-    // Implemente a lógica de desvincular um cliente aqui
   };
+
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <ContainerSectionCustomer>
@@ -75,12 +59,10 @@ const SectionCustomer: React.FC = () => {
           <LinkButtonComponent onClick={handlelinkCustomer} />
         </div>
       </ContainerButtons>
-
       <ContainerSearch>
         <CiSearch className="icon" />
         <input type="text" placeholder="Buscar" />
       </ContainerSearch>
-
       <ContainerLegend>
         <div className="labelData">
           <input type="checkbox" />
@@ -89,10 +71,15 @@ const SectionCustomer: React.FC = () => {
         </div>
         <span>Rede</span>
       </ContainerLegend>
-
-      {customers.map((customer) => {
-        return <CardCustomer key={customer.id} customer={customer} />;
-      })}
+      {customers.map((customer) => (
+        <CardCustomer key={customer.id} customer={customer} />
+      ))}
+      {isModalOpen && (
+        <RegisterCustomer
+          handleClose={() => setIsModalOpen(false)}
+          onCustomerCreated={fetchCustomers}
+        />
+      )}
     </ContainerSectionCustomer>
   );
 };
