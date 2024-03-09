@@ -6,11 +6,10 @@ import {
   ContainerButtons,
   ContainerLegend,
   ContainerSearch,
-  ContainerSectionCustomer,
+  ContainerSectionAssistant,
   Count,
 } from "./styled";
-import AddButtonComponent from "../../atoms/Button/AddButtonComponent";
-import LinkButtonComponent from "../../atoms/Button/LinkButtonComponent";
+import UnlinkButtonComponent from "../../atoms/Button/UnlinkButtonComponent";
 import { API_BASE_URL } from "../../../apiconfig";
 import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
 
@@ -30,50 +29,65 @@ interface Customer {
   CommercialAssistant?: CommercialAssistant | null;
 }
 
-const SectionCustomer: React.FC = () => {
+interface SectionAssistantProps {
+  selectedAssistantId?: string;
+}
+
+const SectionAssistant: React.FC<SectionAssistantProps> = () => {
+  const { selectedAssistantId, selectedAssistantName } =
+    useCommercialAssistant();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
-  const { selectedAssistantId } = useCommercialAssistant();
 
   useEffect(() => {
-    const fetchCustomers = async () => {
-      let url = `${API_BASE_URL}/customer/find`;
+    if (!selectedAssistantId) return;
 
+    const fetchAssistantCustomers = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(
+          `${API_BASE_URL}/commercial-assistant/${selectedAssistantId}`
+        );
         const data = await response.json();
-        console.log("Dados recebidos:", data);
-        setCustomers(data.data || []);
-        setCustomerCount(data.count || 0);
+        console.log("Dados recebidos do assistente:", data);
+        if (data && data.Customers) {
+          setCustomers(data.Customers);
+          setCustomerCount(data.Customers.length);
+        } else {
+          // Trate o caso de não haver clientes ou a resposta ser inesperada
+          setCustomers([]);
+          setCustomerCount(0);
+        }
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error(
+          "Erro ao buscar clientes vinculados ao assistente:",
+          error
+        );
+        setCustomers([]);
+        setCustomerCount(0);
       }
     };
 
-    fetchCustomers();
+    if (selectedAssistantId) {
+      fetchAssistantCustomers();
+    }
   }, [selectedAssistantId]);
 
-  // Funções de manipulação de cliques nos botões
-  const handleAddCustomer = () => {
-    console.log("Lógica para adicionar um cliente.");
-    // Implemente a lógica de adicionar um cliente aqui
-  };
-
-  const handlelinkCustomer = () => {
+  const handleUnlinkCustomer = () => {
     console.log("Lógica para desvincular um cliente.");
     // Implemente a lógica de desvincular um cliente aqui
   };
 
   return (
-    <ContainerSectionCustomer>
+    <ContainerSectionAssistant>
       <ContainerButtons>
         <div>
-          <span>Clientes (Não vinculado)</span>
+          <span>{`Carteira de ${
+            selectedAssistantName || "Assistente não selecionado"
+          }`}</span>
           <Count>{customerCount}</Count>
         </div>
         <div className="buttons">
-          <AddButtonComponent onClick={handleAddCustomer} />
-          <LinkButtonComponent onClick={handlelinkCustomer} />
+          {<UnlinkButtonComponent onClick={handleUnlinkCustomer} />}
         </div>
       </ContainerButtons>
 
@@ -91,11 +105,11 @@ const SectionCustomer: React.FC = () => {
         <span>Rede</span>
       </ContainerLegend>
 
-      {customers.map((customer) => {
-        return <CardCustomer key={customer.id} customer={customer} />;
-      })}
-    </ContainerSectionCustomer>
+      {customers.map((customer) => (
+        <CardCustomer key={customer.id} customer={customer} />
+      ))}
+    </ContainerSectionAssistant>
   );
 };
 
-export default SectionCustomer;
+export default SectionAssistant;

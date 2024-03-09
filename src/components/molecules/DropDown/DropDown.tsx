@@ -15,7 +15,8 @@ interface CommercialAssistant {
 const DropDown: React.FC = () => {
   const [assistants, setAssistants] = useState<CommercialAssistant[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { setSelectedAssistantId } = useCommercialAssistant();
+  const { setSelectedAssistantId, setSelectedAssistantName } =
+    useCommercialAssistant();
 
   useEffect(() => {
     const fetchAssistants = async () => {
@@ -36,7 +37,12 @@ const DropDown: React.FC = () => {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedAssistantId(e.target.value);
+    const id = e.target.value;
+    const selectedAssistant = assistants.find(
+      (assistant) => assistant.id === id
+    );
+    setSelectedAssistantId(id);
+    setSelectedAssistantName(selectedAssistant ? selectedAssistant.name : null);
   };
 
   return (
