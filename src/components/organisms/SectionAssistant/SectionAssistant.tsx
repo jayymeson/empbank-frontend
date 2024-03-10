@@ -132,13 +132,17 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
     }
     try {
       const response = await fetch(url);
+
       const data = await response.json();
-      setCustomers(data.data || []);
-      setCustomerCount(data.count || 0);
+
+      setCustomers(data || []);
+      setCustomerCount(data.length || 0);
     } catch (error) {
       console.error("Erro ao buscar clientes:", error);
     }
   }, [selectedAssistantId, searchTerm]);
+
+  useEffect(() => {}, [customers, customerCount]);
 
   const handleSelectAllChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -170,7 +174,9 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       <ContainerSearch>
         <CiSearch
           className="icon"
-          onClick={() => fetchCustomers()}
+          onClick={() => {
+            fetchCustomers();
+          }}
           style={{ cursor: "pointer" }}
         />
 
@@ -178,7 +184,11 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
           type="text"
           placeholder="Buscar"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            const newSearchTerm = e.target.value;
+
+            setSearchTerm(newSearchTerm);
+          }}
         />
       </ContainerSearch>
 

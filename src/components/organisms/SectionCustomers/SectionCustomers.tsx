@@ -45,12 +45,14 @@ const SectionCustomer: React.FC = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setCustomers(data.data || []);
-      setCustomerCount(data.count || 0);
+      setCustomers(data || []);
+      setCustomerCount(data.length || 0);
     } catch (error) {
       console.error("Erro ao realizar busca específica de clientes:", error);
     }
   };
+
+  useEffect(() => {}, [customers, customerCount]);
 
   useEffect(() => {
     fetchAllCustomers();

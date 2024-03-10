@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../../organisms/Sidebar/Sidebar";
 import SectionCustomer from "../../organisms/SectionCustomers/SectionCustomers";
 import DropDown from "../../molecules/DropDown/DropDown";
-import { ContainerPage, PageContent } from "./styled";
+import { ContainerPage, ContainerSections, PageContent } from "./styled";
 import SectionAssistant from "../../organisms/SectionAssistant/SectionAssistant";
 
 const HomePage = () => {
@@ -12,7 +12,7 @@ const HomePage = () => {
       <PageContent>
         <h1>Carteira de Clientes</h1>
         <DropDown />
-        <div
+        <ContainerSections
           style={{
             display: "flex",
             width: "100%",
@@ -22,7 +22,7 @@ const HomePage = () => {
         >
           <SectionCustomer />
           <SectionAssistant />
-        </div>
+        </ContainerSections>
       </PageContent>
     </ContainerPage>
   );
