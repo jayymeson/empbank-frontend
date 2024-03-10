@@ -9,7 +9,7 @@ import {
   ContainerButtons,
   ContainerModal,
   Overlay,
-  ErrorMessage, 
+  ErrorMessage,
 } from "./styled";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../../apiconfig";
@@ -35,8 +35,8 @@ const RegisterCustomer: React.FC<RegisterCustomerProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-    setError, 
-    clearErrors, 
+    setError,
+    clearErrors,
   } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
   });
@@ -102,12 +102,13 @@ const RegisterCustomer: React.FC<RegisterCustomerProps> = ({
               id="code"
               onBlur={(e) => checkCodeAvailability(e.target.value)}
               disabled={isCodeChecking}
+              placeholder="Ex.: CX10-12"
             />
             {errors.code && <ErrorMessage>{errors.code.message}</ErrorMessage>}
           </div>
           <div className="lineInput">
             <label htmlFor="network">Rede</label>
-            <input {...register("network")} type="text" id="network" />
+            <input {...register("network")} type="text" id="network" placeholder="Ex.: Rede 2"/>
             {errors.network && (
               <ErrorMessage>{errors.network.message}</ErrorMessage>
             )}

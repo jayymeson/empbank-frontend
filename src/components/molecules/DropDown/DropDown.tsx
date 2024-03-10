@@ -56,7 +56,6 @@ const DropDown: React.FC = () => {
         body: JSON.stringify(assistantData),
       });
       if (response.ok) {
-        alert("Assistente comercial cadastrado com sucesso!");
         fetchAssistants(); 
         setIsModalOpen(false); 
       } else {
