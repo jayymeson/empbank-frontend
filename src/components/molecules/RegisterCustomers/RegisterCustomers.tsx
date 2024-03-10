@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,8 @@ import {
   ContainerButtons,
   ContainerModal,
   Overlay,
-} from "./styled"; // Assegure-se que esses estilos estão corretamente importados
+  ErrorMessage, // Certifique-se de ter este estilo para o erro
+} from "./styled";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../../apiconfig";
 
@@ -34,9 +35,33 @@ const RegisterCustomer: React.FC<RegisterCustomerProps> = ({
     register,
     handleSubmit,
     formState: { errors },
+    setError, 
+    clearErrors, 
   } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
   });
+  const [isCodeChecking, setIsCodeChecking] = useState(false);
+
+  const checkCodeAvailability = async (code: string) => {
+    setIsCodeChecking(true);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/customer/check-code?code=${encodeURIComponent(code)}`
+      );
+      const data = await response.json();
+      if (data.message === "Code unavailable") {
+        setError("code", {
+          type: "manual",
+          message: "Código indisponível",
+        });
+      } else {
+        clearErrors("code");
+      }
+    } catch (error) {
+      console.error("Erro ao verificar o código:", error);
+    }
+    setIsCodeChecking(false);
+  };
 
   const onSubmit: SubmitHandler<CustomerFormData> = async (data) => {
     try {
@@ -47,7 +72,7 @@ const RegisterCustomer: React.FC<RegisterCustomerProps> = ({
       });
       if (response.ok) {
         toast.success("Cliente cadastrado com sucesso!");
-        onCustomerCreated(); // Chame a função de callback aqui
+        onCustomerCreated();
         handleClose();
       } else {
         const errorData = await response.json();
@@ -67,24 +92,34 @@ const RegisterCustomer: React.FC<RegisterCustomerProps> = ({
           <div className="lineInput">
             <label htmlFor="name">Nome Completo</label>
             <input {...register("name")} type="text" id="name" />
-            {errors.name && <p>{errors.name.message}</p>}
+            {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
           </div>
           <div className="lineInput">
             <label htmlFor="code">Código</label>
-            <input {...register("code")} type="text" id="code" />
-            {errors.code && <p>{errors.code.message}</p>}
+            <input
+              {...register("code")}
+              type="text"
+              id="code"
+              onBlur={(e) => checkCodeAvailability(e.target.value)}
+              disabled={isCodeChecking}
+            />
+            {errors.code && <ErrorMessage>{errors.code.message}</ErrorMessage>}
           </div>
           <div className="lineInput">
             <label htmlFor="network">Rede</label>
             <input {...register("network")} type="text" id="network" />
-            {errors.network && <p>{errors.network.message}</p>}
+            {errors.network && (
+              <ErrorMessage>{errors.network.message}</ErrorMessage>
+            )}
           </div>
         </ContainerAllInputs>
         <ContainerButtons>
           <ButtonCancel type="button" onClick={handleClose}>
             Cancelar
           </ButtonCancel>
-          <ButtonRegister type="submit">Salvar</ButtonRegister>
+          <ButtonRegister type="submit" disabled={isCodeChecking}>
+            Salvar
+          </ButtonRegister>
         </ContainerButtons>
       </ContainerModal>
     </Overlay>

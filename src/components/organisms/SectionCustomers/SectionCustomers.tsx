@@ -127,7 +127,7 @@ const SectionCustomer: React.FC = () => {
         <CiSearch
           className="icon"
           onClick={searchCustomers}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer"}}
         />
         <input
           type="text"

@@ -12,7 +12,7 @@ const HomePage = () => {
       <PageContent>
         <h1>Carteira de Clientes</h1>
         <DropDown />
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
           <SectionCustomer />
           <SectionAssistant />
         </div>

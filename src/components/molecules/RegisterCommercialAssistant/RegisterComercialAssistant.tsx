@@ -39,7 +39,7 @@ const RegisterCommercialAssistant: React.FC<
   } = useForm<AssistantFormData>({ resolver: zodResolver(assistantSchema) });
 
   const onSubmit: SubmitHandler<AssistantFormData> = async (data) => {
-    console.log("Enviando dados:", data); // Log de debug
+    console.log("Enviando dados:", data); 
     handleCreate(data);
     handleClose();
   };
@@ -47,7 +47,7 @@ const RegisterCommercialAssistant: React.FC<
   return (
     <Overlay>
       <ContainerModal onSubmit={handleSubmit(onSubmit)} as="form">
-        <h2>Cadastro de Cliente</h2>
+        <h2>Cadastro de Assistente Comercial</h2>
         <ContainerAllInputs>
           <InputWrapper>
             <label>Nome Completo</label>

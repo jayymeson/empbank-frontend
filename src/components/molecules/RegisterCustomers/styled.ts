@@ -60,7 +60,7 @@ export const ContainerAllInputs = styled.div`
 `;
 
 export const Overlay = styled.div`
-   position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -87,6 +87,12 @@ export const Input = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+export const ErrorMessage = styled.p`
+  color: #ff0000; // Vermelho para indicar erro
+  margin: 0;
+  font-size: 14px;
 `;
 
 export const ContainerButtons = styled.div`
