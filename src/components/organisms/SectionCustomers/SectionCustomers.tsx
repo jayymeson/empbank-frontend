@@ -99,7 +99,7 @@ const SectionCustomer: React.FC = () => {
       if (response.ok) {
         alert("Clientes vinculados com sucesso ao assistente comercial!");
         setSelectedCustomers([]);
-        fetchAllCustomers(); // Atualize a lista de clientes aqui se necessário
+        triggerRefresh();
       } else {
         alert("Erro ao vincular clientes. Por favor, tente novamente.");
       }

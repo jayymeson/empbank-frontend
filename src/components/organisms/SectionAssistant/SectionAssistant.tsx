@@ -77,7 +77,7 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
     if (shouldRefresh) {
       triggerRefresh();
     }
-  }, [selectedAssistantId, shouldRefresh, triggerRefresh]);
+  }, [selectedAssistantId, shouldRefresh]);
 
   useEffect(() => {
     if (selectAllCheckboxRef.current) {
