@@ -1,5 +1,6 @@
-// Importações necessárias
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -13,7 +14,7 @@ import UnlinkButtonComponent from "../../atoms/Button/UnlinkButtonComponent";
 import { API_BASE_URL } from "../../../apiconfig";
 import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
 
-// Definições de interface
+
 interface CommercialAssistant {
   id: string;
   name: string;
@@ -44,6 +45,7 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
   const [customerCount, setCustomerCount] = useState(0);
   const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (!selectedAssistantId) return;
@@ -105,7 +107,12 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       );
       if (response.ok) {
         alert("Clientes desvinculados com sucesso!");
-        triggerRefresh(); // Para atualizar a lista de clientes vinculados
+        const remainingCustomers = customers.filter(
+          (customer) => !selectedCustomers.includes(customer.id)
+        );
+        setCustomers(remainingCustomers);
+        setCustomerCount(remainingCustomers.length);
+        setSelectedCustomers([]); 
       } else {
         alert("Erro ao desvincular clientes. Por favor, tente novamente.");
       }
@@ -116,6 +123,23 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       );
     }
   };
+
+  const fetchCustomers = useCallback(async () => {
+    let url = `${API_BASE_URL}/customer/find`;
+    if (searchTerm) {
+      url = `${API_BASE_URL}/customer/search?searchTerm=${encodeURIComponent(
+        searchTerm
+      )}`;
+    }
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setCustomers(data.data || []);
+      setCustomerCount(data.count || 0);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    }
+  }, [selectedAssistantId, searchTerm]);
 
   const handleSelectAllChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -145,8 +169,14 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       </ContainerButtons>
 
       <ContainerSearch>
-        <CiSearch className="icon" />
-        <input type="text" placeholder="Buscar" />
+        <CiSearch className="icon" onClick={() => fetchCustomers()} style={{cursor: "pointer"}}/>
+
+        <input
+          type="text"
+          placeholder="Buscar"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </ContainerSearch>
 
       <ContainerLegend>

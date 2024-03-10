@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useCallback } from "react";
 import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
@@ -22,32 +23,41 @@ const SectionCustomer: React.FC = () => {
     useCommercialAssistant();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchCustomers = useCallback(async () => {
-    let url = `${API_BASE_URL}/customer/find`;
+  const fetchAllCustomers = useCallback(async () => {
+    const url = `${API_BASE_URL}/customer/find`;
     try {
       const response = await fetch(url);
       const data = await response.json();
       setCustomers(data.data || []);
       setCustomerCount(data.count || 0);
     } catch (error) {
-      console.error("Erro ao buscar clientes:", error);
+      console.error("Erro ao buscar todos os clientes:", error);
     }
   }, [selectedAssistantId]);
 
+  const searchCustomers = async () => {
+    const url = `${API_BASE_URL}/customer/search?searchTerm=${encodeURIComponent(
+      searchTerm.trim()
+    )}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setCustomers(data.data || []);
+      setCustomerCount(data.count || 0);
+    } catch (error) {
+      console.error("Erro ao realizar busca específica de clientes:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers, shouldRefresh]);
+    fetchAllCustomers();
+  }, [fetchAllCustomers, shouldRefresh]);
 
   const handleAddCustomer = () => {
     setIsModalOpen(true);
   };
-
-  const handlelinkCustomer = async () => {
-    // Aqui entra a lógica para vincular os clientes selecionados
-    triggerRefresh();
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     triggerRefresh();
@@ -89,7 +99,7 @@ const SectionCustomer: React.FC = () => {
       if (response.ok) {
         alert("Clientes vinculados com sucesso ao assistente comercial!");
         setSelectedCustomers([]);
-        fetchCustomers(); // Atualize a lista de clientes aqui se necessário
+        fetchAllCustomers(); // Atualize a lista de clientes aqui se necessário
       } else {
         alert("Erro ao vincular clientes. Por favor, tente novamente.");
       }
@@ -114,8 +124,17 @@ const SectionCustomer: React.FC = () => {
         </div>
       </ContainerButtons>
       <ContainerSearch>
-        <CiSearch className="icon" />
-        <input type="text" placeholder="Buscar" />
+        <CiSearch
+          className="icon"
+          onClick={searchCustomers}
+          style={{ cursor: "pointer" }}
+        />
+        <input
+          type="text"
+          placeholder="Buscar"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </ContainerSearch>
       <ContainerLegend>
         <div className="labelData">
@@ -143,7 +162,7 @@ const SectionCustomer: React.FC = () => {
       {isModalOpen && (
         <RegisterCustomer
           handleClose={handleCloseModal}
-          onCustomerCreated={fetchCustomers} // Pode ajustar conforme a necessidade de atualização após criação
+          onCustomerCreated={fetchAllCustomers} // Pode ajustar conforme a necessidade de atualização após criação
         />
       )}
     </ContainerSectionCustomer>
