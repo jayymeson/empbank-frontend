@@ -4,6 +4,7 @@ import { useCommercialAssistant } from "../../../contexts/CommercialAssistantCon
 import RoundButtonComponent from "../../atoms/Button/RoundButtonComponent";
 import { API_BASE_URL } from "../../../apiconfig";
 import RegisterCommercialAssistant from "../RegisterCommercialAssistant/RegisterComercialAssistant";
+import { DropDownContainer, Select, SelectContainer } from "./style";
 
 interface CommercialAssistant {
   id: string;
@@ -71,18 +72,26 @@ const DropDown: React.FC = () => {
 
   return (
     <>
-      <div>
+      <DropDownContainer>
         <label htmlFor="assistants">Selecione o Assistente Comercial</label>
-        <select name="assistants" id="assistants" onChange={handleSelectChange}>
-          <option value="default">Selecione um Assistente</option>
-          {assistants.map((assistant) => (
-            <option key={assistant.id} value={assistant.id}>
-              {assistant.name}
+        <SelectContainer>
+          <Select
+            name="assistants"
+            id="assistants"
+            onChange={handleSelectChange}
+          >
+            <option value="default">
+              Selecione um Assistente
             </option>
-          ))}
-        </select>
-        <RoundButtonComponent onClick={handleClickOpenModal} />
-      </div>
+            {assistants.map((assistant) => (
+              <option key={assistant.id} value={assistant.id}>
+                {assistant.name}
+              </option>
+            ))}
+          </Select>
+          <RoundButtonComponent onClick={handleClickOpenModal} />
+        </SelectContainer>
+      </DropDownContainer>
       {isModalOpen && (
         <RegisterCommercialAssistant
           handleClose={() => setIsModalOpen(false)}

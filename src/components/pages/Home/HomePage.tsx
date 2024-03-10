@@ -12,7 +12,14 @@ const HomePage = () => {
       <PageContent>
         <h1>Carteira de Clientes</h1>
         <DropDown />
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            gap: "32px",
+            marginTop: "20px",
+          }}
+        >
           <SectionCustomer />
           <SectionAssistant />
         </div>
