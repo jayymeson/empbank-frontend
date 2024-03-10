@@ -8,9 +8,11 @@ export const ContainerSectionAssistant = styled.section`
   border-radius: 18px;
   padding: 24px;
   background-color: #ffffff;
+  align-items: center;
 `;
 
 export const ContainerButtons = styled.div`
+  width: 590px;
   display: flex;
   justify-content: space-between;
 
@@ -30,6 +32,7 @@ export const ContainerButtons = styled.div`
 `;
 
 export const ContainerLegend = styled.div`
+  width: 590px;
   display: flex;
   justify-content: space-between;
   padding: 0 16px;
