@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ContainerPage = styled.div`
   min-height: 100vh;
-  min-width: 100vw;
+  padding-left: 85px; 
   display: flex;
   flex-direction: row;
   gap: 32px;
@@ -10,7 +10,10 @@ export const ContainerPage = styled.div`
 `;
 
 export const PageContent = styled.div`
-  width: 100%;
+  margin-left: 85px; 
+  width: calc(
+    100% - 85px
+  );
   display: flex;
   flex-direction: column;
 

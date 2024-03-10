@@ -1,5 +1,5 @@
 import React from "react";
-import { AddButton } from "./Button-Styled"; // Supondo que você tenha este arquivo de estilos
+import { AddButton } from "./Button-Styled";
 import { ReactComponent as PlusIcon } from "../../../assets/AddCustomers.svg";
 
 type AddButtonComponentProps = {

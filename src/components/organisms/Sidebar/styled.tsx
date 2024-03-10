@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
 export const SidebarContainer = styled.div`
-  min-height: 97.4vh;
+  min-height: 99.5vh;
   width: 85px;
-  height: auto;
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -11,6 +10,9 @@ export const SidebarContainer = styled.div`
   padding: 10px 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
 `;
 
 export const LogoWrapper = styled.div`

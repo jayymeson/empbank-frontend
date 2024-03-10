@@ -90,7 +90,7 @@ export const Input = styled.input`
 `;
 
 export const ErrorMessage = styled.p`
-  color: #ff0000; // Vermelho para indicar erro
+  color: #ff0000;
   margin: 0;
   font-size: 14px;
 `;

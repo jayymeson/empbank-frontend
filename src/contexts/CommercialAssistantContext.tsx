@@ -42,12 +42,11 @@ export const CommercialAssistantProvider: React.FC<{ children: ReactNode }> = ({
   const [shouldRefresh, setShouldRefresh] = useState(false);
 
   const triggerRefresh = useCallback(() => {
-    setShouldRefresh((prev) => !prev); // Simplesmente inverte o estado para disparar uma atualização
+    setShouldRefresh((prev) => !prev); 
   }, []);
 
   useEffect(() => {
     if (shouldRefresh) {
-      // Este useEffect no contexto é apenas demonstrativo, pois o triggerRefresh já faz o trabalho necessário
       console.log("shouldRefresh changed", shouldRefresh);
     }
   }, [shouldRefresh]);

@@ -1,5 +1,5 @@
 import React from "react";
-import { UnlinkButton } from "./Button-Styled"; // Supondo que você tenha este arquivo de estilos
+import { UnlinkButton } from "./Button-Styled"; 
 import { ReactComponent as UnlinkIcon } from "../../../assets/ArrowCircleRight.svg";
 
 type UnlinkButtonComponentProps = {

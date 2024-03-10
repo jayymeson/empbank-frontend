@@ -106,7 +106,6 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
         }
       );
       if (response.ok) {
-        alert("Clientes desvinculados com sucesso!");
         const remainingCustomers = customers.filter(
           (customer) => !selectedCustomers.includes(customer.id)
         );

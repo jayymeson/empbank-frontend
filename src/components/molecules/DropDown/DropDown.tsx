@@ -46,7 +46,6 @@ const DropDown: React.FC = () => {
     setSelectedAssistantName(selectedAssistant ? selectedAssistant.name : "");
   };
 
-  // A função para criar um novo assistente comercial
   const handleCreateAssistant = async (
     assistantData: Omit<CommercialAssistant, "id">
   ) => {
@@ -58,8 +57,8 @@ const DropDown: React.FC = () => {
       });
       if (response.ok) {
         alert("Assistente comercial cadastrado com sucesso!");
-        fetchAssistants(); // Recarrega a lista de assistentes
-        setIsModalOpen(false); // Fecha o modal
+        fetchAssistants(); 
+        setIsModalOpen(false); 
       } else {
         const errorData = await response.json();
         alert(`Erro ao cadastrar assistente comercial: ${errorData.message}`);

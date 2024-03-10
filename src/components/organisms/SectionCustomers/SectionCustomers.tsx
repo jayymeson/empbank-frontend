@@ -97,7 +97,6 @@ const SectionCustomer: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Clientes vinculados com sucesso ao assistente comercial!");
         setSelectedCustomers([]);
         triggerRefresh();
       } else {
