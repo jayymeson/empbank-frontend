@@ -63,6 +63,8 @@ Após executar os comandos, o projeto estará disponível em `http://localhost:3
 <img align="center" alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 <img align="center" alt="Visual Studio Code" src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white">
 
+## Observação, caso o frontend fique desalinhado, favor, diminuir o zoom do navegador a 80%. A resolução do meu monitor é baixo!
+
 ## Autor(es) 👨🏼‍💻👨🏼‍💻👨🏼‍💻👨🏼‍💻
 
 | [<img src="https://avatars.githubusercontent.com/u/100086459?v=4" width=115><br><sub>Jaymeson Mendes</sub>](https://github.com/jayymeson)

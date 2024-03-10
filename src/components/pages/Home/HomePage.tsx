@@ -12,14 +12,7 @@ const HomePage = () => {
       <PageContent>
         <h1>Carteira de Clientes</h1>
         <DropDown />
-        <ContainerSections
-          style={{
-            display: "flex",
-            width: "100%",
-            gap: "32px",
-            marginTop: "20px",
-          }}
-        >
+        <ContainerSections>
           <SectionCustomer />
           <SectionAssistant />
         </ContainerSections>
