@@ -1,5 +1,5 @@
 // Importações necessárias
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -42,20 +42,22 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
   } = useCommercialAssistant();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
+  const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
+  const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (!selectedAssistantId) return;
+
     const fetchAssistantCustomers = async () => {
       try {
         const response = await fetch(
           `${API_BASE_URL}/commercial-assistant/${selectedAssistantId}`
         );
         const data = await response.json();
-        console.log("Dados recebidos do assistente:", data);
         if (data && data.Customers) {
           setCustomers(data.Customers);
           setCustomerCount(data.Customers.length);
         } else {
-          // Trate o caso de não haver clientes ou a resposta ser inesperada
           setCustomers([]);
           setCustomerCount(0);
         }
@@ -70,15 +72,62 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
     };
 
     fetchAssistantCustomers();
-
     if (shouldRefresh) {
       triggerRefresh();
     }
   }, [selectedAssistantId, shouldRefresh, triggerRefresh]);
 
-  const handleUnlinkCustomer = () => {
-    console.log("Lógica para desvincular um cliente.");
-    // Implemente a lógica de desvincular um cliente aqui
+  useEffect(() => {
+    if (selectAllCheckboxRef.current) {
+      selectAllCheckboxRef.current.indeterminate =
+        selectedCustomers.length > 0 &&
+        selectedCustomers.length < customers.length;
+    }
+  }, [selectedCustomers, customers]);
+
+  const handleSelectCustomer = (customerId: string, isSelected: boolean) => {
+    setSelectedCustomers((prev) =>
+      isSelected
+        ? [...prev, customerId]
+        : prev.filter((id) => id !== customerId)
+    );
+  };
+
+  const handleUnlinkCustomers = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/customer/unlink-customers`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customerIds: selectedCustomers }),
+        }
+      );
+      if (response.ok) {
+        alert("Clientes desvinculados com sucesso!");
+        triggerRefresh(); // Para atualizar a lista de clientes vinculados
+      } else {
+        alert("Erro ao desvincular clientes. Por favor, tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao desvincular clientes:", error);
+      alert(
+        "Erro ao desvincular clientes. Verifique o console para mais detalhes."
+      );
+    }
+  };
+
+  const handleSelectAllChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.checked) {
+      // Marca todos os clientes
+      const allCustomerIds = customers.map((customer) => customer.id);
+      setSelectedCustomers(allCustomerIds);
+    } else {
+      // Desmarca todos os clientes
+      setSelectedCustomers([]);
+    }
   };
 
   return (
@@ -91,7 +140,7 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
           <Count>{customerCount}</Count>
         </div>
         <div className="buttons">
-          {<UnlinkButtonComponent onClick={handleUnlinkCustomer} />}
+          {<UnlinkButtonComponent onClick={handleUnlinkCustomers} />}
         </div>
       </ContainerButtons>
 
@@ -102,7 +151,18 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
 
       <ContainerLegend>
         <div className="labelData">
-          <input type="checkbox" />
+          <input
+            ref={selectAllCheckboxRef}
+            type="checkbox"
+            checked={
+              selectedCustomers.length === customers.length &&
+              customers.length > 0
+            }
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+              setSelectedCustomers(isChecked ? customers.map((c) => c.id) : []);
+            }}
+          />
           <span>Código</span>
           <span>Parceiro</span>
         </div>
@@ -110,7 +170,12 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
       </ContainerLegend>
 
       {customers.map((customer) => (
-        <CardCustomer key={customer.id} customer={customer} />
+        <CardCustomer
+          key={customer.id}
+          customer={customer}
+          isSelected={selectedCustomers.includes(customer.id)}
+          onSelectCustomer={handleSelectCustomer}
+        />
       ))}
     </ContainerSectionAssistant>
   );
