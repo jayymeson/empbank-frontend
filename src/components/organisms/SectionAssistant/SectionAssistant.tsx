@@ -5,6 +5,7 @@ import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
 import {
   ContainerButtons,
+  ContainerCount,
   ContainerLegend,
   ContainerSearch,
   ContainerSectionAssistant,
@@ -13,7 +14,6 @@ import {
 import UnlinkButtonComponent from "../../atoms/Button/UnlinkButtonComponent";
 import { API_BASE_URL } from "../../../apiconfig";
 import { useCommercialAssistant } from "../../../contexts/CommercialAssistantContext";
-
 
 interface CommercialAssistant {
   id: string;
@@ -111,7 +111,7 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
         );
         setCustomers(remainingCustomers);
         setCustomerCount(remainingCustomers.length);
-        setSelectedCustomers([]); 
+        setSelectedCustomers([]);
       } else {
         alert("Erro ao desvincular clientes. Por favor, tente novamente.");
       }
@@ -156,19 +156,23 @@ const SectionAssistant: React.FC<SectionAssistantProps> = () => {
   return (
     <ContainerSectionAssistant>
       <ContainerButtons>
-        <div>
+        <ContainerCount>
           <span>{`Carteira de ${
             selectedAssistantName || "Assistente não selecionado"
           }`}</span>
           <Count>{customerCount}</Count>
-        </div>
+        </ContainerCount>
         <div className="buttons">
           {<UnlinkButtonComponent onClick={handleUnlinkCustomers} />}
         </div>
       </ContainerButtons>
 
       <ContainerSearch>
-        <CiSearch className="icon" onClick={() => fetchCustomers()} style={{cursor: "pointer"}}/>
+        <CiSearch
+          className="icon"
+          onClick={() => fetchCustomers()}
+          style={{ cursor: "pointer" }}
+        />
 
         <input
           type="text"

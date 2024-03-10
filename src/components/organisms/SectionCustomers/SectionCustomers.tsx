@@ -4,6 +4,7 @@ import CardCustomer from "../../molecules/CardCustomers/CardCustomer";
 import { CiSearch } from "react-icons/ci";
 import {
   ContainerButtons,
+  ContainerCount,
   ContainerLegend,
   ContainerSearch,
   ContainerSectionCustomer,
@@ -113,10 +114,10 @@ const SectionCustomer: React.FC = () => {
   return (
     <ContainerSectionCustomer>
       <ContainerButtons>
-        <div>
+        <ContainerCount>
           <span>Clientes (Não vinculado)</span>
           <Count>{customerCount}</Count>
-        </div>
+        </ContainerCount>
         <div className="buttons">
           <AddButtonComponent onClick={handleAddCustomer} />
           <LinkButtonComponent onClick={handleLinkCustomers} />
@@ -126,7 +127,7 @@ const SectionCustomer: React.FC = () => {
         <CiSearch
           className="icon"
           onClick={searchCustomers}
-          style={{ cursor: "pointer"}}
+          style={{ cursor: "pointer" }}
         />
         <input
           type="text"

@@ -70,13 +70,19 @@ export const ContainerLegend = styled.div`
   }
 `;
 
-export const Count = styled.div`
-  width: 40px;
-  height: 21px;
-  padding: 0px 12px 0px 12px;
-  border-radius: 18px;
-  border: 1px;
+export const ContainerCount = styled.div`
   gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Count = styled.div`
+  width: 10px;
+  height: 21px;
+  padding: 0px 10px 0px 10px;
+  border-radius: 18px;
+  border: 1px solid #00bdff;
 `;
 
 export const ContainerSearch = styled.div`
