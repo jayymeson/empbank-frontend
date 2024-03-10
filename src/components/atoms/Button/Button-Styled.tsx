@@ -22,6 +22,13 @@ export const AddButton = styled(BaseButton)`
   color: white;
   gap: 20px;
   size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const LinkUnlinkButton = styled(BaseButton)`
@@ -32,6 +39,13 @@ export const LinkUnlinkButton = styled(BaseButton)`
   color: white;
   gap: 10px;
   size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const LinkButton = styled(LinkUnlinkButton)`
@@ -43,6 +57,13 @@ export const LinkButton = styled(LinkUnlinkButton)`
   color: white;
   gap: 10px;
   size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const UnlinkButton = styled(LinkUnlinkButton)`
@@ -54,6 +75,13 @@ export const UnlinkButton = styled(LinkUnlinkButton)`
   color: white;
   gap: 10px;
   size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const RoundButton = styled(BaseButton)`
@@ -62,4 +90,11 @@ export const RoundButton = styled(BaseButton)`
   height: 43px;
   border-radius: 22px;
   size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
